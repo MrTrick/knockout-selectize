@@ -35,7 +35,7 @@ ko.bindingHandlers.selectize = {
                     if (change.status === 'added') {
                         selectize.addOption(_.object([params.valueField, params.labelField], [change.value, change.value]));
                     } else if (change.status === 'deleted') {
-                        selectize.deleteOption(change.value);
+                        selectize.removeOption(change.value);
                     }
                 });
                 changing = false;
@@ -54,6 +54,9 @@ ko.bindingHandlers.selectize = {
                }
             });
         }
+
+        //Selectize bug; doesn't disable the control input if the parent is disabled, even at startup. Fix. (after startup, handled by the observer ahead) 
+        if (selectize.$input.is(':disabled')) selectize.$control_input.prop('disabled', true);
         
         //For knockout bindings to work, we need to observe when the attributes of the <select> element are changed - `required`, `disabled`.
         //This is to update the selectize control to match the <select> element
