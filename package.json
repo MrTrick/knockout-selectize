@@ -1,0 +1,13 @@
+{
+  "name": "knockout-selectize",
+  "version": "0.1.0",
+  "description": "A simple knockout binding that integrates with knockout's select support.",
+  "author": "MrTrick",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrTrick/knockout-selectize"
+  },
+  "devDependencies": {
+  }
+}
