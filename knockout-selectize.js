@@ -33,7 +33,10 @@ ko.bindingHandlers.selectize = {
                 changing = true;
                 changes.forEach(function(change) { 
                     if (change.status === 'added') {
-                        selectize.addOption(_.object([params.valueField, params.labelField], [change.value, change.value]));
+                        option = {};
+                        option[params.labelField] = change.value;
+                        option[params.valueField] = change.value;
+                        selectize.addOption(option);
                     } else if (change.status === 'deleted') {
                         selectize.removeOption(change.value);
                     }
