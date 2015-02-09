@@ -8,10 +8,10 @@
 
 ko.bindingHandlers.selectize = {
     init: function (el, bindingValue, bindings, vm, context) {
-        var bindingValue = bindingValue();
+        bindingValue = bindingValue();
         var params = ko.unwrap(bindingValue);
-        params.valueField || (params.valueField = 'value');
-        params.labelField || (params.labelField = 'text');
+        if (!params.valueField) params.valueField = 'value';
+        if (!params.labelField) params.labelField = 'text';
 
         var $el = $(el);
         if (!$el.is('select')) throw "The selectize knockout binding is only valid on <select> elements. (because of the options binding)";
@@ -20,6 +20,7 @@ ko.bindingHandlers.selectize = {
 
         //What options are being given?
         var options = bindings.get('options');
+        var optionsSubscription = false;
         //If the options are observable, synchronise add/remove events between selectize and knockout
         if (ko.isObservable(options)) {
             var changing = false;
@@ -29,7 +30,7 @@ ko.bindingHandlers.selectize = {
             selectize.on('option_remove', function(value) { if (!changing) options.remove(value); } );
 
             //Whenever the observable has an element added/removed, copy to the options
-            options.subscribe(function(changes) {
+            optionsSubscription = options.subscribe(function(changes) {
                 changing = true;
                 changes.forEach(function(change) {
                     if (change.status === 'added') {
@@ -47,9 +48,10 @@ ko.bindingHandlers.selectize = {
 
         //What is the input's value?
         var value = bindings.get('value');
+        var valueSubscription = false;
         //If the value is observable, synchronise
         if (ko.isObservable(value)) {
-            value.subscribe(function(value) {
+            valueSubscription = value.subscribe(function(value) {
                //If the observable value doesn't match the element value, update the element;
                if (value !== selectize.getValue()) {
                    if (typeof selectize.loadOption === "function") { selectize.loadOption(value); }
@@ -92,6 +94,8 @@ ko.bindingHandlers.selectize = {
         ko.utils.domNodeDisposal.addDisposeCallback(el, function() {
             selectize.destroy();
             observer.disconnect();
+            if (optionsSubscription) optionsSubscription.dispose();
+            if (valueSubscription) valueSubscription.dispose();
         });
     }    
 };
