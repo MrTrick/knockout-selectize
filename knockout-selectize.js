@@ -8,7 +8,7 @@
 
  (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['knockout'], factory);
+    define(['knockout', 'selectize'], factory);
   } else if (typeof exports === 'object' && typeof module === 'object') {
     module.exports = factory;
   } else {
